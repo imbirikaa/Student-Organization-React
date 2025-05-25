@@ -11,7 +11,7 @@ import { AuthProvider } from './context/auth-context'
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Kampüs Sözlük",
+  title: "Öğrenci Teşkilatı",
   description: "Turkish campus community platform",
   generator: 'v0.dev',
 }
