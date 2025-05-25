@@ -1,9 +1,44 @@
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { User, Mail, FileText, Lock, Clock } from "lucide-react"
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
+import Image from 'next/image'
+import { User, Mail, FileText, Lock, Clock } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+
+interface UserType {
+  id: number
+  first_name: string
+  last_name: string
+  nickname: string
+  email: string
+  about?: string
+  avatar_url?: string
+}
 
 export default function UserProfilePage() {
+  const { id } = useParams()
+  const [user, setUser] = useState<UserType | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!id) return
+
+    fetch(`http://localhost:8000/api/users/${id}`, {
+      credentials: 'include',
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Kullanıcı bulunamadı')
+        return res.json()
+      })
+      .then(data => setUser(data))
+      .catch(err => setError(err.message))
+  }, [id])
+
+  if (error) return <div className="text-red-500 text-center mt-10">{error}</div>
+  if (!user) return <div className="text-gray-400 text-center mt-10">Yükleniyor...</div>
+
   return (
     <div>
       {/* Cover image */}
@@ -11,14 +46,12 @@ export default function UserProfilePage() {
         <Image src="/placeholder.svg?height=300&width=1200" alt="Cover image" fill className="object-cover" />
       </div>
 
-      {/* Profile info */}
       <div className="container mx-auto px-4">
         <div className="relative -mt-16 mb-8">
           <div className="flex flex-col md:flex-row gap-6 items-start">
-            {/* Profile image */}
             <div className="relative z-10">
               <Image
-                src="/placeholder.svg?height=120&width=120"
+                src={user.avatar_url || '/placeholder.svg?height=120&width=120'}
                 alt="Profile picture"
                 width={120}
                 height={120}
@@ -26,10 +59,9 @@ export default function UserProfilePage() {
               />
             </div>
 
-            {/* Profile stats */}
             <div className="flex-1 mt-4 md:mt-16">
-              <h1 className="text-2xl font-bold mb-1">Ali Emre Tongur</h1>
-              <p className="text-gray-400 text-sm mb-4">@AliEmre</p>
+              <h1 className="text-2xl font-bold mb-1">{user.first_name + " " + user.last_name}</h1>
+              <p className="text-gray-400 text-sm mb-4">@{user.nickname}</p>
 
               <div className="grid grid-cols-4 gap-4 text-center">
                 <div>
@@ -51,11 +83,10 @@ export default function UserProfilePage() {
               </div>
             </div>
 
-            {/* Action buttons */}
             <div className="flex gap-2 mt-4 md:mt-16">
               <Button variant="outline" className="rounded-full border-teal-500 text-teal-500">
                 <User className="h-4 w-4 mr-2" />
-                Takip et/gönder
+                Takip et
               </Button>
               <Button variant="outline" className="rounded-full border-teal-500 text-teal-500 p-2">
                 <Mail className="h-4 w-4" />
@@ -63,7 +94,6 @@ export default function UserProfilePage() {
             </div>
           </div>
         </div>
-
         {/* Navigation tabs */}
         <div className="border-b border-gray-800 mb-8">
           <div className="flex overflow-x-auto">
@@ -96,7 +126,7 @@ export default function UserProfilePage() {
               <User className="h-5 w-5 text-teal-500 mr-2" />
               <h2 className="text-lg font-medium">Hakkımda</h2>
             </div>
-            <p className="text-gray-400 text-sm">Henüz bir hakkımda yazısı bulunmuyor.</p>
+            <p className="text-gray-400 text-sm">{user.about || "Henüz bir hakkımda yazısı bulunmuyor."}</p>
           </div>
 
           {/* Private profile */}
