@@ -64,7 +64,7 @@ export default function UsersPage() {
                   <td className="px-4 py-3">{user.nickname}</td>
                   <td className="px-4 py-3">{user.created_at.split('T')[0]}</td>
                   <td className="px-4 py-3 text-right">
-                    <Link href={`/user/${user.id}`} className="text-green-600 hover:text-green-500 hover:bg-green-600/10">
+                    <Link href={`/user/${user.nickname}`} className="text-green-600 hover:text-green-500 hover:bg-green-600/10">
                       <ArrowRight className="h-5 w-5" />
                     </Link>
                   </td>

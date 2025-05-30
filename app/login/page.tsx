@@ -45,6 +45,9 @@ export default function LoginPage() {
 
       if (res.ok) {
         await fetchUser()
+        const data = await res.json()
+        // localStorage.setItem('token', data.access_token)
+
         router.push('/')
       } else {
         const data = await res.json()

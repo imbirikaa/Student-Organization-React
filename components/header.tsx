@@ -51,10 +51,10 @@ export default function Header() {
                 className="rounded-full bg-red-500"
               />
             </div>
-            <span className="text-lg font-bold text-red-500">
-              KAMPÜS
+            <span className="text-lg text-center font-bold text-red-500">
+              ÖĞRENCİ
               <br />
-              SÖZLÜK
+              TEŞKİLATI
             </span>
           </Link>
 
