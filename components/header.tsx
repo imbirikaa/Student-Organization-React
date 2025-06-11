@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/app/context/auth-context";
 
 export default function Header() {
-  const { user, setUser, roles,loading } = useAuth();
+  const { user, setUser, roles, loading } = useAuth();
   const router = useRouter();
 
   function getCookieValue(name: string): string {
@@ -148,7 +148,7 @@ export default function Header() {
               <div className="absolute right-0 mt-2 w-40 bg-gray-800 text-sm text-white rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
                 <Link
                   href="/settings"
-                  className="block px-4 py-2 hover:bg-gray-700 flex items-center gap-2"
+                  className=" px-4 py-2 hover:bg-gray-700 flex items-center gap-2"
                 >
                   <Settings className="h-4 w-4" /> Ayarlar
                 </Link>
