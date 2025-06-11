@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { User, Mail, FileText, Lock, Clock } from "lucide-react"
+import { User, Mail, FileText, Lock, Clock, Settings } from "lucide-react"
 import { useAuth } from "@/app/context/auth-context"
 
 export default function UserProfilePage() {
@@ -27,7 +27,7 @@ export default function UserProfilePage() {
       {/* Profile info */}
       <div className="container mx-auto px-4">
         <div className="relative -mt-16 mb-8">
-          <div className="flex flex-col md:flex-row gap-6 items-start">
+          <div className="flex mt-5 flex-col md:flex-row gap-6 items-start">
             {/* Profile image */}
             <div className="relative z-10">
               <Image
@@ -67,12 +67,10 @@ export default function UserProfilePage() {
             {/* Action buttons */}
             <div className="flex gap-2 mt-4 md:mt-16">
               <Button variant="outline" className="rounded-full border-teal-500 text-teal-500">
-                <User className="h-4 w-4 mr-2" />
-                Takip et/gönder
+                <Settings className="h-4 w-4 mr-2" />
+                Profili Düzenle
               </Button>
-              <Button variant="outline" className="rounded-full border-teal-500 text-teal-500 p-2">
-                <Mail className="h-4 w-4" />
-              </Button>
+
             </div>
           </div>
         </div>

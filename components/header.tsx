@@ -1,39 +1,56 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
-  Search, Bell, MessageCircle, Home, Users, FileText, Info, LogOut, Settings
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useAuth } from '@/app/context/auth-context'
+  Search,
+  Bell,
+  MessageCircle,
+  Home,
+  Users,
+  FileText,
+  Info,
+  LogOut,
+  Settings,
+  Lock,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/app/context/auth-context";
 
 export default function Header() {
-  const { user, setUser } = useAuth()
-  const router = useRouter()
-
+  const { user, setUser, roles,loading } = useAuth();
+  const router = useRouter();
 
   function getCookieValue(name: string): string {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()!.split(';').shift()!;
-    return '';
+    if (parts.length === 2) return parts.pop()!.split(";").shift()!;
+    return "";
   }
   // Logout function
   const handleLogout = async () => {
-    const token = decodeURIComponent(getCookieValue('XSRF-TOKEN'))
+    const token = decodeURIComponent(getCookieValue("XSRF-TOKEN"));
 
-    await fetch('http://localhost:8000/logout', {
-      method: 'POST',
-      credentials: 'include',
+    await fetch("http://localhost:8000/logout", {
+      method: "POST",
+      credentials: "include",
       headers: {
-        'X-XSRF-TOKEN': token, // ✅ Required for Laravel Sanctum
+        "X-XSRF-TOKEN": token, // ✅ Required for Laravel Sanctum
       },
-    })
+    });
 
-    setUser(null)
-    router.push('/')
+    setUser(null);
+    router.push("/");
+  };
+
+  // If loading, return null to avoid rendering the header
+  if (loading) {
+    return (
+      <header className="border-b border-gray-800 bg-[#111827] py-2 sticky top-0 z-50 flex justify-center items-center h-16">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-500"></div>
+      </header>
+    );
   }
 
   return (
@@ -70,22 +87,43 @@ export default function Header() {
 
         {/* Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-1 text-sm text-gray-300 hover:text-white">
+          <Link
+            href="/"
+            className="flex items-center gap-1 text-sm text-gray-300 hover:text-white"
+          >
             <Home className="h-5 w-5" />
             <span>Anasayfa</span>
           </Link>
-          <Link href="/topluluklar" className="flex items-center gap-1 text-sm text-gray-300 hover:text-white">
+          <Link
+            href="/topluluklar"
+            className="flex items-center gap-1 text-sm text-gray-300 hover:text-white"
+          >
             <Users className="h-5 w-5" />
             <span>Topluluklar</span>
           </Link>
-          <Link href="/etkinlikler" className="flex items-center gap-1 text-sm text-gray-300 hover:text-white">
+          <Link
+            href="/etkinlikler"
+            className="flex items-center gap-1 text-sm text-gray-300 hover:text-white"
+          >
             <FileText className="h-5 w-5" />
             <span>Etkinlikler</span>
           </Link>
-          <Link href="/about-us" className="flex items-center gap-1 text-sm text-gray-300 hover:text-white">
+          <Link
+            href="/about-us"
+            className="flex items-center gap-1 text-sm text-gray-300 hover:text-white"
+          >
             <Info className="h-5 w-5" />
             <span>Hakkımızda</span>
           </Link>
+          {roles.includes("admin") && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-1 text-sm text-gray-300 hover:text-white"
+            >
+              <Lock className="h-5 w-5" />
+              <span>Admin Paneli</span>
+            </Link>
+          )}
         </nav>
 
         {/* Right Actions */}
@@ -108,7 +146,10 @@ export default function Header() {
                 className="rounded-full border-2 border-teal-500 cursor-pointer"
               />
               <div className="absolute right-0 mt-2 w-40 bg-gray-800 text-sm text-white rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                <Link href="/settings" className="block px-4 py-2 hover:bg-gray-700 flex items-center gap-2">
+                <Link
+                  href="/settings"
+                  className="block px-4 py-2 hover:bg-gray-700 flex items-center gap-2"
+                >
                   <Settings className="h-4 w-4" /> Ayarlar
                 </Link>
                 <button
@@ -131,12 +172,14 @@ export default function Header() {
                 </Button>
               </Link>
               <Link href="/hesap-olustur">
-                <Button className="rounded-full text-sm bg-teal-500 hover:bg-teal-600 text-white">Kayıt Ol</Button>
+                <Button className="rounded-full text-sm bg-teal-500 hover:bg-teal-600 text-white">
+                  Kayıt Ol
+                </Button>
               </Link>
             </>
           )}
         </div>
       </div>
     </header>
-  )
+  );
 }
