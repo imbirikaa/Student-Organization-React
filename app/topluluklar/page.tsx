@@ -1,12 +1,10 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { User, FileEdit } from "lucide-react"
+// I've added FilePlus for the new button's icon
+import { User, FileEdit, FilePlus } from "lucide-react"
 
 export default function CommunitiesPage() {
-  const idSet = (id) => {
-    return `/topluluklar/${id}`
-  }
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Banner ads */}
@@ -56,7 +54,18 @@ export default function CommunitiesPage() {
       {/* Communities header */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Topluluklar</h1>
-        <Button className="bg-teal-500 hover:bg-teal-600 rounded-full">Başvur</Button>
+        {/* --- Button container --- */}
+        <div className="flex items-center gap-4">
+          {/* --- NEW BUTTON ADDED HERE --- */}
+          <Link href="/topluluk_olustur">
+            <Button className="bg-teal-500 hover:bg-teal-600 flex items-center gap-2">
+              <FilePlus className="h-5 w-5" />
+              Topluluk Oluştur
+            </Button>
+          </Link>
+          {/* --- ORIGINAL BUTTON IS PRESERVED --- */}
+          <Button className="bg-teal-500 hover:bg-teal-600 rounded-full">Başvur</Button>
+        </div>
       </div>
 
       {/* Communities grid */}
@@ -98,7 +107,7 @@ export default function CommunitiesPage() {
               </div>
             </div>
             <Link href={`/about-us`} className="block text-center text-blue-500 hover:text-blue-400 text-sm">
-                İncele
+              İncele
             </Link>
           </div>
         ))}

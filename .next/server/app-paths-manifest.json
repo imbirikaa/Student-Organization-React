@@ -1,8 +1,6 @@
 {
-  "/page": "app/page.js",
   "/login/page": "app/login/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/users/page": "app/users/page.js",
-  "/profile-duzenle/page": "app/profile-duzenle/page.js",
-  "/hesap-olustur/page": "app/hesap-olustur/page.js"
+  "/topluluklar/page": "app/topluluklar/page.js",
+  "/topluluk_olustur/page": "app/topluluk_olustur/page.js",
+  "/page": "app/page.js"
 }
