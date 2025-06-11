@@ -4,9 +4,14 @@ import { Button } from "@/components/ui/button"
 import { User, FileEdit } from "lucide-react"
 
 export default function CommunitiesPage() {
-  const idSet = (id) => {
-    return `/topluluklar/${id}`
-  }
+  // interface IdSetFn {
+  //   (id: number | string): string
+  // }
+
+  // const idSet: IdSetFn = (id) => {
+  //   return `/topluluklar/${id}`
+  // }
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Banner ads */}
