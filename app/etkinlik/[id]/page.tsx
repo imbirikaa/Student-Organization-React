@@ -62,7 +62,7 @@ interface EventType {
   id: number;
   community: {
     id: number;
-    name: string;
+    community: string;
   };
   event: string;
   cover_image: string;
@@ -203,15 +203,15 @@ export default function EventDetailPage() {
               <div className="flex items-center gap-4">
                 <Image
                   src={event.cover_image}
-                  alt={event.event}
+                  alt={event.community.community}
                   width={48}
                   height={48}
                   className="w-12 h-12 rounded-full"
                 />
                 <div>
-                  <h3 className="font-semibold">{event.event}</h3>
+                  <h3 className="font-semibold">{event.community.community}</h3>
                   <Link
-                    href={`/community/${event.id}`}
+                    href={`/community/${event.community.id}`}
                     className="text-xs text-teal-400 hover:underline"
                   >
                     Topluluğu Görüntüle
