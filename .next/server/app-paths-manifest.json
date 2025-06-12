@@ -1,6 +1,8 @@
 {
-  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/admin/page": "app/admin/page.js",
   "/topluluklar/page": "app/topluluklar/page.js",
   "/topluluk_olustur/page": "app/topluluk_olustur/page.js",
-  "/page": "app/page.js"
+  "/topluluklar/[id]/page": "app/topluluklar/[id]/page.js",
+  "/about-us/page": "app/about-us/page.js"
 }
