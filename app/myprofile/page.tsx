@@ -35,7 +35,9 @@ export default function MyProfile() {
     return null;
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -91,7 +93,12 @@ export default function MyProfile() {
     <div>
       {/* Cover image */}
       <div className="relative h-64 w-full">
-        <Image src="/images/bg.png" alt="Cover image" fill className="object-cover" />
+        <Image
+          src="/images/bg.png"
+          alt="Cover image"
+          fill
+          className="object-cover"
+        />
       </div>
       <div className="container mx-auto px-4">
         <div className="relative -mt-16 mb-8">
@@ -115,16 +122,22 @@ export default function MyProfile() {
                   className="text-2xl font-bold mb-1 bg-gray-900 text-white rounded px-2 py-1 w-full"
                 />
               ) : (
-                <h1 className="text-2xl font-bold mb-1">{user.name || user.nickname}</h1>
+                <h1 className="text-2xl font-bold mb-1">
+                  {user.name || user.nickname}
+                </h1>
               )}
               <p className="text-gray-400 text-sm mb-4">@{user.nickname}</p>
               <div className="grid grid-cols-4 gap-4 text-center">
                 <div>
-                  <div className="text-teal-500 font-bold text-xl">{user.community_count || 0}</div>
+                  <div className="text-teal-500 font-bold text-xl">
+                    {user.community_count || 0}
+                  </div>
                   <div className="text-xs text-gray-400">Topluluğa Üye</div>
                 </div>
                 <div>
-                  <div className="text-teal-500 font-bold text-xl">{user.friend_count || 0}</div>
+                  <div className="text-teal-500 font-bold text-xl">
+                    {user.friend_count || 0}
+                  </div>
                   <div className="text-xs text-gray-400">Arkadaş</div>
                 </div>
                 <div>
@@ -132,7 +145,9 @@ export default function MyProfile() {
                   <div className="text-xs text-gray-400">Konu Açtı</div>
                 </div>
                 <div>
-                  <div className="text-teal-500 font-bold text-xl">{user.event_count || 0}</div>
+                  <div className="text-teal-500 font-bold text-xl">
+                    {user.event_count || 0}
+                  </div>
                   <div className="text-xs text-gray-400">Etkinliğe Katıldı</div>
                 </div>
               </div>
@@ -140,15 +155,26 @@ export default function MyProfile() {
             <div className="flex gap-2 mt-4 md:mt-16">
               {editMode ? (
                 <>
-                  <Button onClick={handleSave} disabled={saving} className="rounded-full bg-teal-600 text-white">
+                  <Button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="rounded-full bg-teal-600 text-white"
+                  >
                     {saving ? "Kaydediliyor..." : "Kaydet"}
                   </Button>
-                  <Button onClick={handleCancel} variant="outline" className="rounded-full">
+                  <Button
+                    onClick={handleCancel}
+                    variant="outline"
+                    className="rounded-full"
+                  >
                     İptal
                   </Button>
                 </>
               ) : (
-                <Button onClick={handleEdit} className="rounded-full bg-teal-600 text-white">
+                <Button
+                  onClick={handleEdit}
+                  className="rounded-full bg-teal-600 text-white"
+                >
                   Profili Düzenle
                 </Button>
               )}
@@ -195,7 +221,9 @@ export default function MyProfile() {
                 maxLength={500}
               />
             ) : (
-              <p className="text-gray-400 text-sm">{user.about || "Henüz bir hakkımda yazısı bulunmuyor."}</p>
+              <p className="text-gray-400 text-sm">
+                {user.about || "Henüz bir hakkımda yazısı bulunmuyor."}
+              </p>
             )}
           </div>
           {/* Private profile */}
@@ -204,7 +232,9 @@ export default function MyProfile() {
               <Lock className="h-5 w-5 text-teal-500 mr-2" />
               <h2 className="text-lg font-medium">Gizli Profil</h2>
             </div>
-            <p className="text-gray-400 text-sm">Profil bilgilerinizin bir kısmı gizli tutulur.</p>
+            <p className="text-gray-400 text-sm">
+              Profil bilgilerinizin bir kısmı gizli tutulur.
+            </p>
           </div>
           {/* Activities */}
           <div className="bg-gray-900 rounded-lg p-6">
@@ -216,7 +246,10 @@ export default function MyProfile() {
               <span className="text-xs text-gray-400">Son 3 Etkinlik</span>
             </div>
             {[1, 2].map((activity) => (
-              <div key={activity} className="mb-4 border-b border-gray-800 pb-4 last:border-0">
+              <div
+                key={activity}
+                className="mb-4 border-b border-gray-800 pb-4 last:border-0"
+              >
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                     <Clock className="h-4 w-4" />
@@ -224,8 +257,9 @@ export default function MyProfile() {
                   <span className="text-sm font-medium">deneme etkinliği</span>
                 </div>
                 <p className="text-xs text-gray-400 pl-10">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                  industry's standard dummy text ever since the 1500s.
+                  Lorem Ipsum is simply dummy text of the printing and
+                  typesetting industry. Lorem Ipsum has been the industry's
+                  standard dummy text ever since the 1500s.
                 </p>
               </div>
             ))}
@@ -245,7 +279,9 @@ export default function MyProfile() {
                     <Clock className="h-5 w-5 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="font-medium">Sklerozan Kolanjit Ders Notları PDF</h3>
+                    <h3 className="font-medium">
+                      Sklerozan Kolanjit Ders Notları PDF
+                    </h3>
                     <p className="text-xs text-gray-400">2024-09-25 22:31:10</p>
                   </div>
                 </div>
@@ -254,7 +290,9 @@ export default function MyProfile() {
           </div>
         </div>
         {error && <div className="text-red-600 font-semibold">{error}</div>}
-        {success && <div className="text-green-600 font-semibold">{success}</div>}
+        {success && (
+          <div className="text-green-600 font-semibold">{success}</div>
+        )}
       </div>
     </div>
   );

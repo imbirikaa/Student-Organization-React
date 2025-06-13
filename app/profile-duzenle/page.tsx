@@ -36,8 +36,12 @@ export default function ProfileDuzenle() {
   const [success, setSuccess] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
-  const [selectedUniversity, setSelectedUniversity] = useState(form.university_id);
-  const [selectedDepartment, setSelectedDepartment] = useState(form.department_id);
+  const [selectedUniversity, setSelectedUniversity] = useState(
+    form.university_id
+  );
+  const [selectedDepartment, setSelectedDepartment] = useState(
+    form.department_id
+  );
 
   // Populate form with user data on mount or user change
   useEffect(() => {
@@ -284,7 +288,11 @@ export default function ProfileDuzenle() {
             onChange={(e) => {
               setSelectedUniversity(e.target.value);
               setSelectedDepartment("");
-              setForm(f => ({ ...f, university_id: e.target.value, department_id: "" }));
+              setForm((f) => ({
+                ...f,
+                university_id: e.target.value,
+                department_id: "",
+              }));
             }}
             className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
@@ -306,17 +314,19 @@ export default function ProfileDuzenle() {
             value={selectedDepartment}
             onChange={(e) => {
               setSelectedDepartment(e.target.value);
-              setForm(f => ({ ...f, department_id: e.target.value }));
+              setForm((f) => ({ ...f, department_id: e.target.value }));
             }}
             className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
             disabled={!selectedUniversity}
           >
             <option value="">Bölüm seçin</option>
-            {universitiesData.find(u => String(u.id) === String(selectedUniversity))?.programs.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
+            {universitiesData
+              .find((u) => String(u.id) === String(selectedUniversity))
+              ?.programs.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
           </select>
         </div>
         {/* Error and Success Messages */}

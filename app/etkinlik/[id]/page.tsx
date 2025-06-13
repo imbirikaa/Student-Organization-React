@@ -63,6 +63,7 @@ interface EventType {
   community: {
     id: number;
     community: string;
+    logo: string;
   };
   event: string;
   cover_image: string;
@@ -143,7 +144,7 @@ export default function EventDetailPage() {
       {/* --- Cover Image --- */}
       <div className="relative h-64 w-full">
         <Image
-          src={event.cover_image}
+          src="/images/bg.png"
           alt="Event cover image"
           className="object-cover w-full h-full"
         />
@@ -185,7 +186,7 @@ export default function EventDetailPage() {
           <div className="lg:col-span-2 bg-gradient-to-br from-gray-900 to-gray-800/80 rounded-lg p-6 border border-gray-800 transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center mb-6 border-b border-gray-700 pb-3">
               <h2 className="text-xl font-semibold text-teal-400">
-                Etkinlik Açıklaması 
+                Etkinlik Açıklaması
               </h2>
             </div>
             <p className="text-gray-300 text-base leading-relaxed whitespace-pre-line">
@@ -202,7 +203,7 @@ export default function EventDetailPage() {
               </div>
               <div className="flex items-center gap-4">
                 <Image
-                  src={event.cover_image}
+                  src={event.community.logo}
                   alt={event.community.community}
                   width={48}
                   height={48}
@@ -211,7 +212,7 @@ export default function EventDetailPage() {
                 <div>
                   <h3 className="font-semibold">{event.community.community}</h3>
                   <Link
-                    href={`/community/${event.community.id}`}
+                    href={`/topluluklar/${event.community.id}`}
                     className="text-xs text-teal-400 hover:underline"
                   >
                     Topluluğu Görüntüle
