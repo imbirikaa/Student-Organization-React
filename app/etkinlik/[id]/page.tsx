@@ -185,7 +185,7 @@ export default function EventDetailPage() {
           <div className="lg:col-span-2 bg-gradient-to-br from-gray-900 to-gray-800/80 rounded-lg p-6 border border-gray-800 transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center mb-6 border-b border-gray-700 pb-3">
               <h2 className="text-xl font-semibold text-teal-400">
-                Etkinlik Açıklaması
+                Etkinlik Açıklaması 
               </h2>
             </div>
             <p className="text-gray-300 text-base leading-relaxed whitespace-pre-line">
