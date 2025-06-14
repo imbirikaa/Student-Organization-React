@@ -187,50 +187,6 @@ export default function CommunityPage() {
         )}
       </div>
 
-      {/* Banner ads */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-        <div className="bg-blue-600 rounded-lg overflow-hidden h-20 flex items-center">
-          <div className="w-1/4 flex justify-center">
-            <Image
-              src="/placeholder.svg?height=40&width=40"
-              alt="Reeder"
-              width={80}
-              height={40}
-              className="object-contain"
-            />
-          </div>
-          <div className="w-3/4 flex justify-end pr-4">
-            <Image
-              src="/placeholder.svg?height=40&width=40"
-              alt="Kampüs Sözlük"
-              width={80}
-              height={40}
-              className="object-contain"
-            />
-          </div>
-        </div>
-        <div className="bg-blue-600 rounded-lg overflow-hidden h-20 flex items-center">
-          <div className="w-1/4 flex justify-center">
-            <Image
-              src="/placeholder.svg?height=40&width=40"
-              alt="Reeder"
-              width={80}
-              height={40}
-              className="object-contain"
-            />
-          </div>
-          <div className="w-3/4 flex justify-end pr-4">
-            <Image
-              src="/placeholder.svg?height=40&width=40"
-              alt="Kampüs Sözlük"
-              width={80}
-              height={40}
-              className="object-contain"
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Community header */}
       <div className="grid md:grid-cols-4 gap-6 mb-8">
         <div className="md:col-span-1">
