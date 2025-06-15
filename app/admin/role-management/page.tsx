@@ -88,7 +88,9 @@ export default function RoleManagementPage() {
   const { user, loading: authLoading } = useAuth();
   const { hasPermission, getUserRole, refreshPermissions } = usePermissions();
   const [communities, setCommunities] = useState<Community[]>([]);
-  const [selectedCommunityId, setSelectedCommunityId] = useState<number | null>(null);
+  const [selectedCommunityId, setSelectedCommunityId] = useState<number | null>(
+    null
+  );
   const [members, setMembers] = useState<Member[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
@@ -112,7 +114,9 @@ export default function RoleManagementPage() {
 
   const fetchCommunities = async () => {
     try {
-      const response = await authenticatedFetch("http://localhost:8000/api/user/communities");
+      const response = await authenticatedFetch(
+        "http://localhost:8000/api/user/communities"
+      );
       if (response.ok) {
         const data = await response.json();
         setCommunities(data.communities || []);
@@ -127,7 +131,7 @@ export default function RoleManagementPage() {
 
   const fetchMembers = async () => {
     if (!selectedCommunityId) return;
-    
+
     try {
       setLoading(true);
       const response = await authenticatedFetch(
@@ -147,7 +151,9 @@ export default function RoleManagementPage() {
 
   const fetchRoles = async () => {
     try {
-      const response = await authenticatedFetch("http://localhost:8000/api/community-roles");
+      const response = await authenticatedFetch(
+        "http://localhost:8000/api/community-roles"
+      );
       if (response.ok) {
         const data = await response.json();
         setRoles(data.roles || []);
@@ -159,7 +165,9 @@ export default function RoleManagementPage() {
 
   const fetchPermissions = async () => {
     try {
-      const response = await authenticatedFetch("http://localhost:8000/api/permissions");
+      const response = await authenticatedFetch(
+        "http://localhost:8000/api/permissions"
+      );
       if (response.ok) {
         const data = await response.json();
         setPermissions(data.permissions || []);
@@ -201,7 +209,11 @@ export default function RoleManagementPage() {
   };
 
   const handleRemoveMember = async (memberId: number, memberName: string) => {
-    if (!confirm(`Are you sure you want to remove ${memberName} from this community?`)) {
+    if (
+      !confirm(
+        `Are you sure you want to remove ${memberName} from this community?`
+      )
+    ) {
       return;
     }
 
@@ -230,13 +242,13 @@ export default function RoleManagementPage() {
 
   const getRoleIcon = (roleName: string) => {
     switch (roleName) {
-      case 'Kurucu':
+      case "Kurucu":
         return <Crown className="h-4 w-4 text-yellow-500" />;
-      case 'Yönetici':
+      case "Yönetici":
         return <Shield className="h-4 w-4 text-blue-500" />;
-      case 'Moderatör':
+      case "Moderatör":
         return <Star className="h-4 w-4 text-purple-500" />;
-      case 'Üye':
+      case "Üye":
         return <Users className="h-4 w-4 text-green-500" />;
       default:
         return <Eye className="h-4 w-4 text-gray-500" />;
@@ -245,16 +257,16 @@ export default function RoleManagementPage() {
 
   const getRoleBadgeColor = (roleName: string) => {
     switch (roleName) {
-      case 'Kurucu':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Yönetici':
-        return 'bg-blue-100 text-blue-800';
-      case 'Moderatör':
-        return 'bg-purple-100 text-purple-800';
-      case 'Üye':
-        return 'bg-green-100 text-green-800';
+      case "Kurucu":
+        return "bg-yellow-100 text-yellow-800";
+      case "Yönetici":
+        return "bg-blue-100 text-blue-800";
+      case "Moderatör":
+        return "bg-purple-100 text-purple-800";
+      case "Üye":
+        return "bg-green-100 text-green-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -267,27 +279,33 @@ export default function RoleManagementPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Users className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">No Communities</h1>
-          <p className="text-gray-600">You need to be a member of a community to manage roles.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            No Communities
+          </h1>
+          <p className="text-gray-600">
+            You need to be a member of a community to manage roles.
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <RequirePermission 
-      communityId={selectedCommunityId} 
+    <RequirePermission
+      communityId={selectedCommunityId}
       permission="assign_roles"
       fallback={
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
             <Shield className="mx-auto h-12 w-12 text-red-500 mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Access Denied
+            </h1>
             <p className="text-gray-600">
               You need role assignment permissions in this community.
             </p>
             <p className="text-sm text-gray-500 mt-2">
-              Current role: {getUserRole(selectedCommunityId) || 'None'}
+              Current role: {getUserRole(selectedCommunityId) || "None"}
             </p>
           </div>
         </div>
@@ -341,7 +359,10 @@ export default function RoleManagementPage() {
             ) : (
               <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {members.map((member) => (
-                  <div key={member.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <div
+                    key={member.id}
+                    className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div className="flex-shrink-0">
@@ -357,7 +378,8 @@ export default function RoleManagementPage() {
                             {member.user.email}
                           </p>
                           <p className="text-xs text-gray-400 dark:text-gray-500">
-                            Joined: {new Date(member.joined_date).toLocaleDateString()}
+                            Joined:{" "}
+                            {new Date(member.joined_date).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
@@ -366,7 +388,11 @@ export default function RoleManagementPage() {
                         {/* Current Role */}
                         <div className="flex items-center space-x-2">
                           {getRoleIcon(member.role.name)}
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(member.role.name)}`}>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(
+                              member.role.name
+                            )}`}
+                          >
                             {member.role.name}
                           </span>
                         </div>
@@ -376,7 +402,9 @@ export default function RoleManagementPage() {
                           <div className="flex items-center space-x-2">
                             <select
                               value={newRoleId || ""}
-                              onChange={(e) => setNewRoleId(Number(e.target.value))}
+                              onChange={(e) =>
+                                setNewRoleId(Number(e.target.value))
+                              }
                               className="px-3 py-1 border border-gray-300 rounded text-sm"
                             >
                               <option value="">Select role...</option>
@@ -419,13 +447,18 @@ export default function RoleManagementPage() {
                                 <Edit3 className="h-4 w-4" />
                               </Button>
                             </RequirePermission>
-                            
+
                             <RequirePermission
                               communityId={selectedCommunityId}
                               permission="remove_members"
                             >
                               <Button
-                                onClick={() => handleRemoveMember(member.id, member.user.name)}
+                                onClick={() =>
+                                  handleRemoveMember(
+                                    member.id,
+                                    member.user.name
+                                  )
+                                }
                                 size="sm"
                                 variant="outline"
                                 className="text-red-600 hover:text-red-700 hover:border-red-300"

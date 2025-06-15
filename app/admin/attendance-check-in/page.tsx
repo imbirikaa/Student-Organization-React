@@ -4,7 +4,11 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/app/context/auth-context";
 import { usePermissions } from "@/app/context/permissions-context";
-import { RequirePermission, RequireRole, PermissionButton } from "@/components/RequirePermission";
+import {
+  RequirePermission,
+  RequireRole,
+  PermissionButton,
+} from "@/components/RequirePermission";
 import { toast } from "react-hot-toast";
 import {
   QrCode,
@@ -71,7 +75,9 @@ export default function AttendanceCheckInPage() {
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
-  const [selectedCommunityId, setSelectedCommunityId] = useState<number | null>(null);
+  const [selectedCommunityId, setSelectedCommunityId] = useState<number | null>(
+    null
+  );
   const [events, setEvents] = useState<any[]>([]);
   const [checkInStats, setCheckInStats] = useState<CheckInStats | null>(null);
 
@@ -92,7 +98,8 @@ export default function AttendanceCheckInPage() {
         "http://localhost:8000/api/admin/events"
       );
       if (response.ok) {
-        const data = await response.json();        setEvents(data.data || []);
+        const data = await response.json();
+        setEvents(data.data || []);
         if (data.data?.length > 0) {
           setSelectedEventId(data.data[0].id);
           // Find community ID from the first event
@@ -233,15 +240,23 @@ export default function AttendanceCheckInPage() {
   // Show basic content if no community selected yet, but require general admin role
   if (!selectedCommunityId) {
     return (
-      <RequireRole communityId={1} role="admin" fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <Shield className="mx-auto h-12 w-12 text-red-500 mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-            <p className="text-gray-600">You need admin permissions to access this page.</p>
+      <RequireRole
+        communityId={1}
+        role="admin"
+        fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+              <Shield className="mx-auto h-12 w-12 text-red-500 mb-4" />
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                Access Denied
+              </h1>
+              <p className="text-gray-600">
+                You need admin permissions to access this page.
+              </p>
+            </div>
           </div>
-        </div>
-      }>
+        }
+      >
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
           <div className="container mx-auto px-4 py-8">
             <div className="mb-8">
@@ -252,7 +267,7 @@ export default function AttendanceCheckInPage() {
                 Select an event to begin checking in attendees
               </p>
             </div>
-            
+
             {/* Event Selection */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -263,7 +278,9 @@ export default function AttendanceCheckInPage() {
                 onChange={(e) => {
                   const eventId = Number(e.target.value);
                   setSelectedEventId(eventId);
-                  const selectedEvent = events.find(event => event.id === eventId);
+                  const selectedEvent = events.find(
+                    (event) => event.id === eventId
+                  );
                   if (selectedEvent?.community_id) {
                     setSelectedCommunityId(selectedEvent.community_id);
                   }
@@ -286,19 +303,21 @@ export default function AttendanceCheckInPage() {
   }
 
   return (
-    <RequirePermission 
-      communityId={selectedCommunityId} 
+    <RequirePermission
+      communityId={selectedCommunityId}
       permission="manage_attendance"
       fallback={
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
             <Shield className="mx-auto h-12 w-12 text-red-500 mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Access Denied
+            </h1>
             <p className="text-gray-600">
               You need attendance management permissions in this community.
             </p>
             <p className="text-sm text-gray-500 mt-2">
-              Current role: {getUserRole(selectedCommunityId) || 'None'}
+              Current role: {getUserRole(selectedCommunityId) || "None"}
             </p>
           </div>
         </div>
@@ -315,18 +334,20 @@ export default function AttendanceCheckInPage() {
               Check in attendees using attendance codes or QR codes
             </p>
           </div>
-
           {/* Event Selection */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Select Event
-            </label>            <select
+            </label>{" "}
+            <select
               value={selectedEventId || ""}
               onChange={(e) => {
                 const eventId = Number(e.target.value);
                 setSelectedEventId(eventId);
                 // Update community ID when event changes
-                const selectedEvent = events.find(event => event.id === eventId);
+                const selectedEvent = events.find(
+                  (event) => event.id === eventId
+                );
                 if (selectedEvent?.community_id) {
                   setSelectedCommunityId(selectedEvent.community_id);
                 }
@@ -342,7 +363,6 @@ export default function AttendanceCheckInPage() {
               ))}
             </select>
           </div>
-
           {/* Check-in Statistics */}
           {checkInStats && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -411,7 +431,6 @@ export default function AttendanceCheckInPage() {
               </div>
             </div>
           )}
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Single Check-In */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
@@ -505,7 +524,6 @@ export default function AttendanceCheckInPage() {
               </div>
             </div>
           </div>
-
           {/* Recent Check-ins */}
           {checkInStats && checkInStats.recent_check_ins.length > 0 && (
             <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
@@ -535,7 +553,8 @@ export default function AttendanceCheckInPage() {
                 ))}
               </div>
             </div>
-          )}        </div>
+          )}{" "}
+        </div>
       </div>
     </RequirePermission>
   );
