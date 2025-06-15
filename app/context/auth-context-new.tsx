@@ -34,8 +34,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize token from localStorage on app start
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedToken = localStorage.getItem("auth_token");
+    if (typeof window !== 'undefined') {
+      const savedToken = localStorage.getItem('auth_token');
       if (savedToken) {
         setToken(savedToken);
       }
@@ -56,13 +56,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUser = async () => {
     if (!token) return;
-
+    
     setLoading(true);
     try {
       const res = await fetch("http://localhost:8000/api/me", {
         headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json",
         },
       });
 
@@ -73,16 +73,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         // Token is invalid, clear it
         setToken(null);
-        if (typeof window !== "undefined") {
-          localStorage.removeItem("auth_token");
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('auth_token');
         }
       }
     } catch (error) {
       console.error("Error fetching user:", error);
       // On error, clear auth state
       setToken(null);
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("auth_token");
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth_token');
       }
     } finally {
       setLoading(false);
@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
+          "Accept": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
@@ -104,8 +104,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const data = await res.json();
         const newToken = data.token;
         setToken(newToken);
-        if (typeof window !== "undefined") {
-          localStorage.setItem("auth_token", newToken);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('auth_token', newToken);
         }
         return true;
       } else {
@@ -124,20 +124,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await fetch("http://localhost:8000/api/logout", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
           },
         });
       } catch (error) {
         console.error("Logout error:", error);
       }
     }
-
+    
     setToken(null);
     setUser(null);
     setRoles([]);
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("auth_token");
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
     }
   };
 

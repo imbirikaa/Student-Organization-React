@@ -168,18 +168,12 @@ export default function AuditLogsPage() {
   };
 
   const getActionIcon = (action: string) => {
-    if (action.includes("create"))
-      return <CheckCircle className="w-4 h-4 text-green-500" />;
-    if (action.includes("delete"))
-      return <XCircle className="w-4 h-4 text-red-500" />;
-    if (action.includes("update"))
-      return <RefreshCw className="w-4 h-4 text-blue-500" />;
-    if (action.includes("approve"))
-      return <CheckCircle className="w-4 h-4 text-green-500" />;
-    if (action.includes("reject"))
-      return <XCircle className="w-4 h-4 text-red-500" />;
-    if (action.includes("permission"))
-      return <Shield className="w-4 h-4 text-orange-500" />;
+    if (action.includes("create")) return <CheckCircle className="w-4 h-4 text-green-500" />;
+    if (action.includes("delete")) return <XCircle className="w-4 h-4 text-red-500" />;
+    if (action.includes("update")) return <RefreshCw className="w-4 h-4 text-blue-500" />;
+    if (action.includes("approve")) return <CheckCircle className="w-4 h-4 text-green-500" />;
+    if (action.includes("reject")) return <XCircle className="w-4 h-4 text-red-500" />;
+    if (action.includes("permission")) return <Shield className="w-4 h-4 text-orange-500" />;
     return <Activity className="w-4 h-4 text-gray-500" />;
   };
 
@@ -245,9 +239,7 @@ export default function AuditLogsPage() {
                 <div className="flex items-center">
                   <Activity className="w-8 h-8 text-blue-600" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
-                      Total Actions
-                    </p>
+                    <p className="text-sm font-medium text-gray-600">Total Actions</p>
                     <p className="text-2xl font-bold text-gray-900">
                       {auditStats.total_actions}
                     </p>
@@ -271,9 +263,7 @@ export default function AuditLogsPage() {
                 <div className="flex items-center">
                   <Clock className="w-8 h-8 text-purple-600" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
-                      This Week
-                    </p>
+                    <p className="text-sm font-medium text-gray-600">This Week</p>
                     <p className="text-2xl font-bold text-gray-900">
                       {auditStats.actions_this_week}
                     </p>
@@ -285,12 +275,9 @@ export default function AuditLogsPage() {
                 <div className="flex items-center">
                   <Eye className="w-8 h-8 text-orange-600" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
-                      Top Action
-                    </p>
+                    <p className="text-sm font-medium text-gray-600">Top Action</p>
                     <p className="text-lg font-bold text-gray-900">
-                      {auditStats.top_actions[0]?.action.replace(/_/g, " ") ||
-                        "None"}
+                      {auditStats.top_actions[0]?.action.replace(/_/g, " ") || "None"}
                     </p>
                   </div>
                 </div>
@@ -338,10 +325,7 @@ export default function AuditLogsPage() {
                 <select
                   value={filters.resource_type}
                   onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      resource_type: e.target.value,
-                    }))
+                    setFilters((prev) => ({ ...prev, resource_type: e.target.value }))
                   }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -362,10 +346,7 @@ export default function AuditLogsPage() {
                   type="date"
                   value={filters.from_date}
                   onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      from_date: e.target.value,
-                    }))
+                    setFilters((prev) => ({ ...prev, from_date: e.target.value }))
                   }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -390,9 +371,7 @@ export default function AuditLogsPage() {
           {/* Audit Logs Table */}
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
-                Audit Log Entries
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900">Audit Log Entries</h3>
             </div>
 
             <div className="overflow-x-auto">
@@ -447,12 +426,8 @@ export default function AuditLogsPage() {
                           <div className="text-sm text-gray-900">
                             {log.user ? (
                               <>
-                                <div className="font-medium">
-                                  {log.user.name}
-                                </div>
-                                <div className="text-gray-500">
-                                  {log.user.email}
-                                </div>
+                                <div className="font-medium">{log.user.name}</div>
+                                <div className="text-gray-500">{log.user.email}</div>
                               </>
                             ) : (
                               <span className="text-gray-500">System</span>
@@ -463,13 +438,9 @@ export default function AuditLogsPage() {
                           <div className="text-sm text-gray-900">
                             {log.resource_type && (
                               <>
-                                <div className="font-medium">
-                                  {log.resource_type}
-                                </div>
+                                <div className="font-medium">{log.resource_type}</div>
                                 {log.resource_id && (
-                                  <div className="text-gray-500">
-                                    ID: {log.resource_id}
-                                  </div>
+                                  <div className="text-gray-500">ID: {log.resource_id}</div>
                                 )}
                               </>
                             )}

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { useAuth } from "./auth-context";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './auth-context';
 
 interface Permission {
   id: number;
@@ -22,8 +22,7 @@ interface CommunityPermission {
 }
 
 interface PermissionsContextType {
-  userPermissions: CommunityPermission[];
-  loading: boolean;
+  userPermissions: CommunityPermission[];  loading: boolean;
   hasPermission: (communityId: number, permission: string) => boolean;
   getUserRole: (communityId: number) => string | null;
   isAdmin: (communityId: number) => boolean;
@@ -33,12 +32,10 @@ interface PermissionsContextType {
   getCurrentCommunityId: () => number | null;
 }
 
-const PermissionsContext = createContext<PermissionsContextType | undefined>(
-  undefined
-);
+const PermissionsContext = createContext<PermissionsContextType | undefined>(undefined);
 
 const getCookieValue = (name: string): string => {
-  if (typeof document === "undefined") return "";
+  if (typeof document === 'undefined') return '';
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) {
@@ -49,7 +46,7 @@ const getCookieValue = (name: string): string => {
 };
 
 const authenticatedFetch = async (url: string, options: RequestInit = {}) => {
-  if (typeof document !== "undefined") {
+  if (typeof document !== 'undefined') {
     await fetch("http://localhost:8000/sanctum/csrf-cookie", {
       credentials: "include",
     });
@@ -69,24 +66,16 @@ const authenticatedFetch = async (url: string, options: RequestInit = {}) => {
   });
 };
 
-export function PermissionsProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function PermissionsProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  const [userPermissions, setUserPermissions] = useState<CommunityPermission[]>(
-    []
-  );
+  const [userPermissions, setUserPermissions] = useState<CommunityPermission[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchUserPermissions = async () => {
     try {
       setLoading(true);
-      const response = await authenticatedFetch(
-        "http://localhost:8000/api/user/permissions"
-      );
-
+      const response = await authenticatedFetch("http://localhost:8000/api/user/permissions");
+      
       if (response.ok) {
         const data = await response.json();
         setUserPermissions(data.permissions || []);
@@ -106,58 +95,30 @@ export function PermissionsProvider({
       setLoading(false);
     }
   }, [user]);
-  const hasPermission = (communityId: number, permission: string): boolean => {
-    // Website administrators have access to everything
-    if (user?.is_admin === true) {
-      return true;
-    }
 
-    const communityPermission = userPermissions.find(
-      (p) => p.communityId === communityId
-    );
+  const hasPermission = (communityId: number, permission: string): boolean => {
+    const communityPermission = userPermissions.find(p => p.communityId === communityId);
     return communityPermission?.permissions.includes(permission) || false;
   };
 
   const getUserRole = (communityId: number): string | null => {
-    // Website administrators can be considered as having highest role
-    if (user?.is_admin === true) {
-      return "Website Admin";
-    }
-
-    const communityPermission = userPermissions.find(
-      (p) => p.communityId === communityId
-    );
+    const communityPermission = userPermissions.find(p => p.communityId === communityId);
     return communityPermission?.role.role || null;
   };
 
   const isAdmin = (communityId: number): boolean => {
-    // Website administrators are always admin
-    if (user?.is_admin === true) {
-      return true;
-    }
-
     const role = getUserRole(communityId);
-    return role === "Kurucu" || role === "Yönetici";
+    return role === 'Kurucu' || role === 'Yönetici';
   };
 
   const isFounder = (communityId: number): boolean => {
-    // Website administrators have founder-level access
-    if (user?.is_admin === true) {
-      return true;
-    }
-
     const role = getUserRole(communityId);
-    return role === "Kurucu";
+    return role === 'Kurucu';
   };
 
   const isModerator = (communityId: number): boolean => {
-    // Website administrators have moderator-level access and above
-    if (user?.is_admin === true) {
-      return true;
-    }
-
     const role = getUserRole(communityId);
-    return role === "Moderatör";
+    return role === 'Moderatör';
   };
   const refreshPermissions = async () => {
     await fetchUserPermissions();
@@ -172,19 +133,17 @@ export function PermissionsProvider({
   };
 
   return (
-    <PermissionsContext.Provider
-      value={{
-        userPermissions,
-        loading,
-        hasPermission,
-        getUserRole,
-        isAdmin,
-        isFounder,
-        isModerator,
-        refreshPermissions,
-        getCurrentCommunityId,
-      }}
-    >
+    <PermissionsContext.Provider value={{
+      userPermissions,
+      loading,
+      hasPermission,
+      getUserRole,
+      isAdmin,
+      isFounder,
+      isModerator,
+      refreshPermissions,
+      getCurrentCommunityId
+    }}>
       {children}
     </PermissionsContext.Provider>
   );
@@ -193,7 +152,7 @@ export function PermissionsProvider({
 export const usePermissions = () => {
   const context = useContext(PermissionsContext);
   if (context === undefined) {
-    throw new Error("usePermissions must be used within a PermissionsProvider");
+    throw new Error('usePermissions must be used within a PermissionsProvider');
   }
   return context;
 };
@@ -205,16 +164,12 @@ export const usePermissionsSafe = () => {
 };
 
 // Conditional wrapper that only provides permissions when user is authenticated
-export function ConditionalPermissionsProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function ConditionalPermissionsProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-
+  
   if (user) {
     return <PermissionsProvider>{children}</PermissionsProvider>;
   }
-
+  
   return <>{children}</>;
 }
