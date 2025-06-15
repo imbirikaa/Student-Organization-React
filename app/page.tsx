@@ -60,7 +60,6 @@ export default function HomePage() {
     <div className="min-h-screen">
       {/* Hero section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-16 md:py-24">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
         <div className="relative container mx-auto px-4">
           <div className="flex flex-col items-center justify-center text-center">
             <div className="mb-8 relative">

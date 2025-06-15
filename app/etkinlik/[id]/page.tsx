@@ -229,11 +229,13 @@ export default function EventDetailPage() {
 
       console.log("Response status:", response.status);
       console.log("Response headers:", response.headers);
-
       const data = await response.json();
       console.log("Response data:", data);
       if (response.ok) {
-        setIsRegistered(!isRegistered);
+        // Update registration state
+        const newRegistrationState = !isRegistered;
+        setIsRegistered(newRegistrationState);
+
         // Refresh registration stats
         try {
           const statsRes = await fetch(
@@ -260,11 +262,20 @@ export default function EventDetailPage() {
           console.log("Could not refresh stats:", error);
         }
 
-        toast.success(
-          isRegistered
-            ? "Etkinlik kaydınız iptal edildi."
-            : "Etkinliğe başarıyla kaydoldunuz!"
-        );
+        // Show success message with attendance code info for new registrations
+        if (newRegistrationState) {
+          toast.success(
+            "🎉 Etkinliğe başarıyla kaydoldunuz! Katılım kodunuz e-posta ile gönderildi.",
+            { duration: 5000 }
+          );
+        } else {
+          toast.success("Etkinlik kaydınız iptal edildi.");
+        }
+
+        // Force a small delay to ensure UI updates
+        setTimeout(() => {
+          // Additional UI updates if needed
+        }, 100);
       } else {
         toast.error(data.message || "Bir hata oluştu.");
       }

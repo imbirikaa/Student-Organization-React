@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/app/context/auth-context";
+import { usePermissions } from "@/app/context/permissions-context";
 import RequireRole from "@/components/RequireRole";
+import { RequirePermission } from "@/components/RequirePermission";
 import { toast } from "react-hot-toast";
 import {
   Clock,

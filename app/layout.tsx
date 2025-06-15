@@ -9,6 +9,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header";
 import { AuthProvider } from "./context/auth-context";
+import { PermissionsProvider } from "./context/permissions-context";
 import BannerAd from "@/components/BannedAd";
 import ScrollToTop from "@/components/scroll-to-top";
 
@@ -36,18 +37,20 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <ScrollToTop />
-            <Header />
+            <PermissionsProvider>
+              <ScrollToTop />
+              <Header />
 
-            <main className="min-h-screen">
-              <div className="container mx-auto px-4 py-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                  <BannerAd image="/images/bg.png" alt="Banner Ad 1" />
-                  <BannerAd image="/images/bg.png" alt="Banner Ad 2" />
+              <main className="min-h-screen">
+                <div className="container mx-auto px-4 py-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                    <BannerAd image="/images/bg.png" alt="Banner Ad 1" />
+                    <BannerAd image="/images/bg.png" alt="Banner Ad 2" />
+                  </div>
                 </div>
-              </div>
-              {children}
-            </main>
+                {children}
+              </main>
+            </PermissionsProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

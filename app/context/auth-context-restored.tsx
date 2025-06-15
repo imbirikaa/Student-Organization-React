@@ -41,7 +41,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       const token = getCookieValue("XSRF-TOKEN");
-      const res = await fetch("http://localhost:8000/api/me", {
+
+      const res = await fetch("http://localhost:8000/api/me-legacy", {
         credentials: "include",
         headers: {
           "X-XSRF-TOKEN": token,

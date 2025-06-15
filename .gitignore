@@ -1,6 +1,89 @@
-.next
-.cache
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-node_modules
-dist
-build
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# testing
+/coverage
+/testing/
+/temp/
+test/
+__tests__/temp/
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+/dist
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env.test
+.env.development.local
+.env.production.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Test and Debug Files
+test_*.js
+test_*.ts
+test_*.jsx
+test_*.tsx
+debug_*.js
+debug_*.ts
+debug_*.jsx
+debug_*.tsx
+*_test.*
+*_debug.*
+check_*.js
+verify_*.js
+setup_*.js
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+*.log
+logs/
+temp-logs/
+
+# Backup files
+*.backup
+*.bak
+backup_*/
+
+# Development utilities
+dev-utils/
+dev-scripts/
