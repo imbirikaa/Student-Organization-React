@@ -186,7 +186,6 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
-
   // State for real data
   const [stats, setStats] = useState(mockStats);
   const [recentUsers, setRecentUsers] = useState(mockRecentUsers);
@@ -194,6 +193,16 @@ export default function AdminDashboard() {
     mockRecentCommunities
   );
   const [dataLoading, setDataLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // State for comprehensive admin data
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [allCommunities, setAllCommunities] = useState<any[]>([]);
+  const [allEvents, setAllEvents] = useState<any[]>([]);
+  const [pendingApplications, setPendingApplications] = useState<any[]>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [communitiesLoading, setCommunitiesLoading] = useState(false);
+  const [eventsLoading, setEventsLoading] = useState(false);
 
   // Fetch real admin data only when user is authenticated and has admin role
   useEffect(() => {
@@ -210,6 +219,7 @@ export default function AdminDashboard() {
       }
       try {
         setDataLoading(true);
+        setError(null);
         console.log("Starting admin data fetch...");
 
         // Get CSRF token
@@ -236,9 +246,8 @@ export default function AdminDashboard() {
         } else {
           const errorText = await statsRes.text();
           console.error("Stats fetch failed:", statsRes.status, errorText);
-        }
-
-        // Fetch recent users
+          setError("Failed to fetch statistics");
+        } // Fetch recent users
         const usersRes = await fetch(
           "http://localhost:8000/api/admin/recent-users",
           {
@@ -257,6 +266,7 @@ export default function AdminDashboard() {
           setRecentUsers(usersData);
         } else {
           console.error("Users fetch failed:", usersRes.status);
+          // Keep mock data if fetch fails
         }
 
         // Fetch recent communities
@@ -278,9 +288,11 @@ export default function AdminDashboard() {
           setRecentCommunities(communitiesData);
         } else {
           console.error("Communities fetch failed:", communitiesRes.status);
+          // Keep mock data if fetch fails
         }
       } catch (error) {
         console.error("Failed to fetch admin data:", error);
+        setError("Failed to load admin dashboard data");
       } finally {
         setDataLoading(false);
       }
@@ -296,6 +308,150 @@ export default function AdminDashboard() {
     if (parts.length === 2) return parts.pop()!.split(";").shift()!;
     return "";
   };
+
+  // Comprehensive data fetching functions
+  const fetchUsers = async () => {
+    if (!user || !roles.includes("admin")) return;
+
+    try {
+      setUsersLoading(true);
+      await fetch("http://localhost:8000/sanctum/csrf-cookie", {
+        credentials: "include",
+      });
+
+      const response = await fetch("http://localhost:8000/api/admin/users", {
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "X-XSRF-TOKEN": getCookieValue("XSRF-TOKEN") || "",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAllUsers(data);
+      } else {
+        console.error("Failed to fetch users:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  const fetchCommunities = async () => {
+    if (!user || !roles.includes("admin")) return;
+
+    try {
+      setCommunitiesLoading(true);
+      await fetch("http://localhost:8000/sanctum/csrf-cookie", {
+        credentials: "include",
+      });
+
+      const response = await fetch(
+        "http://localhost:8000/api/admin/communities",
+        {
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "X-XSRF-TOKEN": getCookieValue("XSRF-TOKEN") || "",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setAllCommunities(data);
+      } else {
+        console.error("Failed to fetch communities:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching communities:", error);
+    } finally {
+      setCommunitiesLoading(false);
+    }
+  };
+
+  const fetchEvents = async () => {
+    if (!user || !roles.includes("admin")) return;
+
+    try {
+      setEventsLoading(true);
+      await fetch("http://localhost:8000/sanctum/csrf-cookie", {
+        credentials: "include",
+      });
+
+      const response = await fetch("http://localhost:8000/api/admin/events", {
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "X-XSRF-TOKEN": getCookieValue("XSRF-TOKEN") || "",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAllEvents(data);
+      } else {
+        console.error("Failed to fetch events:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setEventsLoading(false);
+    }
+  };
+
+  const fetchPendingApplications = async () => {
+    if (!user || !roles.includes("admin")) return;
+
+    try {
+      await fetch("http://localhost:8000/sanctum/csrf-cookie", {
+        credentials: "include",
+      });
+
+      const response = await fetch(
+        "http://localhost:8000/api/admin/pending-applications",
+        {
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "X-XSRF-TOKEN": getCookieValue("XSRF-TOKEN") || "",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setPendingApplications(data);
+      } else {
+        console.error("Failed to fetch pending applications:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching pending applications:", error);
+    }
+  };
+
+  // Effect to fetch data based on active tab
+  useEffect(() => {
+    if (!user || !roles.includes("admin")) return;
+
+    switch (activeTab) {
+      case "users":
+        if (allUsers.length === 0) fetchUsers();
+        break;
+      case "communities":
+        if (allCommunities.length === 0) fetchCommunities();
+        break;
+      case "events":
+        if (allEvents.length === 0) fetchEvents();
+        break;
+      case "moderation":
+        if (pendingApplications.length === 0) fetchPendingApplications();
+        break;
+    }
+  }, [activeTab, user, roles]);
 
   useEffect(() => {
     // Simulate loading
@@ -385,8 +541,24 @@ export default function AdminDashboard() {
                     {activeTab === "moderation" && "Moderasyon"}
                     {activeTab === "analytics" && "Analitik"}
                   </h2>
-                </div>
+                </div>{" "}
                 <div className="flex items-center gap-4">
+                  {activeTab === "dashboard" && (
+                    <Button
+                      onClick={() => window.location.reload()}
+                      variant="ghost"
+                      size="sm"
+                      disabled={dataLoading}
+                      className="flex items-center gap-2"
+                    >
+                      <Activity
+                        className={`w-4 h-4 ${
+                          dataLoading ? "animate-spin" : ""
+                        }`}
+                      />
+                      Yenile
+                    </Button>
+                  )}
                   <Button variant="ghost" size="sm" className="relative">
                     <Bell className="w-5 h-5" />
                     <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
@@ -394,12 +566,59 @@ export default function AdminDashboard() {
                   <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full"></div>
                 </div>
               </div>
-            </header>
-
+            </header>{" "}
             {/* Page Content */}
             <main className="p-6">
               {activeTab === "dashboard" && (
                 <div className="space-y-8">
+                  {/* Error Banner */}
+                  {error && (
+                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            <X className="h-5 w-5 text-red-400" />
+                          </div>
+                          <div className="ml-3">
+                            <p className="text-sm text-red-700 dark:text-red-300">
+                              {error}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            onClick={() => window.location.reload()}
+                            size="sm"
+                            variant="outline"
+                            className="border-red-300 text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/20"
+                          >
+                            Yenile
+                          </Button>
+                          <Button
+                            onClick={() => setError(null)}
+                            size="sm"
+                            variant="ghost"
+                            className="text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-900/20"
+                          >
+                            Kapat
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Loading Banner */}
+                  {dataLoading && (
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+                      <div className="flex items-center">
+                        <Loader2 className="h-5 w-5 text-blue-500 animate-spin mr-3" />
+                        <p className="text-sm text-blue-700 dark:text-blue-300">
+                          Admin verileri yükleniyor...
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Stats Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard
@@ -531,19 +750,33 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </div>
-              )}
-
+              )}{" "}
               {activeTab === "users" && (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                       Kullanıcı Yönetimi
                     </h3>
-                    <Button className="bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Yeni Kullanıcı
-                    </Button>
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={fetchUsers}
+                        variant="outline"
+                        disabled={usersLoading}
+                      >
+                        {usersLoading ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Activity className="w-4 h-4 mr-2" />
+                        )}
+                        Yenile
+                      </Button>
+                      <Button className="bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Yeni Kullanıcı
+                      </Button>
+                    </div>
                   </div>
+
                   <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
                     <div className="flex items-center gap-4 mb-6">
                       <div className="relative flex-1">
@@ -559,65 +792,398 @@ export default function AdminDashboard() {
                         Filtrele
                       </Button>
                     </div>
-                    <div className="space-y-3">
-                      {mockRecentUsers.map((user) => (
-                        <div
-                          key={user.id}
-                          className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl"
-                        >
-                          <div className="flex items-center gap-4">
-                            <Image
-                              src={user.avatar}
-                              alt={user.name}
-                              width={48}
-                              height={48}
-                              className="w-12 h-12 rounded-full"
-                            />
-                            <div>
-                              <p className="font-medium text-gray-900 dark:text-white">
-                                {user.name}
-                              </p>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">
-                                {user.email}
-                              </p>
-                              <p className="text-xs text-gray-400 dark:text-gray-500">
-                                Katılım: {user.joinDate}
-                              </p>
+
+                    {usersLoading ? (
+                      <div className="text-center py-12">
+                        <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-500" />
+                        <p className="text-gray-500 dark:text-gray-400">
+                          Kullanıcılar yükleniyor...
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {(allUsers.length > 0 ? allUsers : mockRecentUsers).map(
+                          (user: any) => (
+                            <div
+                              key={user.id}
+                              className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            >
+                              <div className="flex items-center gap-4">
+                                <Image
+                                  src={
+                                    user.avatar ||
+                                    user.profile_picture ||
+                                    "/placeholder.svg?height=48&width=48"
+                                  }
+                                  alt={
+                                    user.name ||
+                                    `${user.first_name} ${user.last_name}`
+                                  }
+                                  width={48}
+                                  height={48}
+                                  className="w-12 h-12 rounded-full"
+                                />
+                                <div>
+                                  <p className="font-medium text-gray-900 dark:text-white">
+                                    {user.name ||
+                                      `${user.first_name} ${user.last_name}`}
+                                  </p>
+                                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    {user.email}
+                                  </p>
+                                  {user.nickname && (
+                                    <p className="text-xs text-blue-600 dark:text-blue-400">
+                                      @{user.nickname}
+                                    </p>
+                                  )}
+                                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                                    Katılım:{" "}
+                                    {user.joinDate ||
+                                      user.created_at?.substring(0, 10)}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <span
+                                  className={`px-3 py-1 text-xs rounded-full ${
+                                    (user.status || "Active") === "Active"
+                                      ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                                      : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
+                                  }`}
+                                >
+                                  {user.status || "Active"}
+                                </span>
+                                <Button variant="ghost" size="sm">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                                <Button variant="ghost" size="sm">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-red-600 hover:text-red-700"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}{" "}
+              {activeTab === "communities" && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      Topluluk Yönetimi
+                    </h3>
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={fetchCommunities}
+                        variant="outline"
+                        disabled={communitiesLoading}
+                      >
+                        {communitiesLoading ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Activity className="w-4 h-4 mr-2" />
+                        )}
+                        Yenile
+                      </Button>
+                      <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Yeni Topluluk
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="relative flex-1">
+                        <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Topluluk ara..."
+                          className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        />
+                      </div>
+                      <Button variant="outline">
+                        <Filter className="w-4 h-4 mr-2" />
+                        Filtrele
+                      </Button>
+                    </div>
+
+                    {communitiesLoading ? (
+                      <div className="text-center py-12">
+                        <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-green-500" />
+                        <p className="text-gray-500 dark:text-gray-400">
+                          Topluluklar yükleniyor...
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {(allCommunities.length > 0
+                          ? allCommunities
+                          : mockRecentCommunities
+                        ).map((community: any) => (
+                          <div
+                            key={community.id}
+                            className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          >
+                            <div className="flex items-center gap-3 mb-3">
+                              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                                <Building className="w-6 h-6 text-white" />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-medium text-gray-900 dark:text-white">
+                                  {community.name || community.community}
+                                </h4>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                  {community.members ||
+                                    community.member_count ||
+                                    0}{" "}
+                                  üye
+                                </p>
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                              {community.description || "Açıklama yok"}
+                            </p>
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-400">
+                                {community.createdDate ||
+                                  community.created_at?.substring(0, 10)}
+                              </span>
+                              <div className="flex gap-2">
+                                <Button variant="ghost" size="sm">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                                <Button variant="ghost" size="sm">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                              </div>
                             </div>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <span
-                              className={`px-3 py-1 text-xs rounded-full ${
-                                user.status === "Active"
-                                  ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                                  : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-                              }`}
-                            >
-                              {user.status}
-                            </span>
-                            <Button variant="ghost" size="sm">
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600 hover:text-red-700"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
+              {activeTab === "events" && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      Etkinlik Yönetimi
+                    </h3>
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={fetchEvents}
+                        variant="outline"
+                        disabled={eventsLoading}
+                      >
+                        {eventsLoading ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Activity className="w-4 h-4 mr-2" />
+                        )}
+                        Yenile
+                      </Button>
+                      <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Yeni Etkinlik
+                      </Button>
+                    </div>
+                  </div>
 
-              {/* Add other tab content as needed */}
-              {activeTab !== "dashboard" && activeTab !== "users" && (
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="relative flex-1">
+                        <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Etkinlik ara..."
+                          className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        />
+                      </div>
+                      <Button variant="outline">
+                        <Filter className="w-4 h-4 mr-2" />
+                        Filtrele
+                      </Button>
+                    </div>
+
+                    {eventsLoading ? (
+                      <div className="text-center py-12">
+                        <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-purple-500" />
+                        <p className="text-gray-500 dark:text-gray-400">
+                          Etkinlikler yükleniyor...
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {allEvents.length > 0 ? (
+                          allEvents.map((event: any) => (
+                            <div
+                              key={event.id}
+                              className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            >
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1">
+                                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                                    {event.event || event.title}
+                                  </h4>
+                                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                    {event.description || "Açıklama yok"}
+                                  </p>
+                                  <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                                    <span className="flex items-center gap-1">
+                                      <Calendar className="w-4 h-4" />
+                                      {event.start_datetime?.substring(0, 10)}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="w-4 h-4" />
+                                      {event.start_datetime?.substring(11, 16)}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                      <Users className="w-4 h-4" />
+                                      {event.registrations_count || 0} katılımcı
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="flex gap-2">
+                                  <Button variant="ghost" size="sm">
+                                    <Eye className="w-4 h-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm">
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-red-600 hover:text-red-700"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center py-12">
+                            <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                            <p className="text-gray-500 dark:text-gray-400">
+                              Henüz etkinlik yok
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              {activeTab === "moderation" && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      Moderasyon
+                    </h3>
+                    <Button
+                      onClick={fetchPendingApplications}
+                      variant="outline"
+                    >
+                      <Activity className="w-4 h-4 mr-2" />
+                      Yenile
+                    </Button>
+                  </div>
+
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                      Bekleyen Başvurular
+                    </h4>
+
+                    {pendingApplications.length > 0 ? (
+                      <div className="space-y-4">
+                        {pendingApplications.map((application: any) => (
+                          <div
+                            key={application.id}
+                            className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4"
+                          >
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <h5 className="font-medium text-gray-900 dark:text-white">
+                                  {application.user?.name ||
+                                    `${application.user?.first_name} ${application.user?.last_name}`}
+                                </h5>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                  {application.community?.name ||
+                                    application.community?.community}{" "}
+                                  topluluğuna başvuru
+                                </p>
+                                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                  {application.created_at?.substring(0, 10)}
+                                </p>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  className="bg-green-600 hover:bg-green-700"
+                                >
+                                  Onayla
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-red-600 border-red-600 hover:bg-red-50"
+                                >
+                                  Reddet
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <Shield className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-500 dark:text-gray-400">
+                          Bekleyen başvuru yok
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              {activeTab === "analytics" && (
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    Analitik
+                  </h3>
+                  <div className="text-center py-16">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <BarChart3 className="h-8 w-8 text-white" />
+                    </div>
+                    <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                      Gelişmiş Analitik
+                    </h4>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      Detaylı istatistikler ve analitik raporlar yakında...
+                    </p>
+                  </div>
+                </div>
+              )}
+              {/* Default fallback */}
+              {![
+                "dashboard",
+                "users",
+                "communities",
+                "events",
+                "moderation",
+                "analytics",
+              ].includes(activeTab) && (
                 <div className="text-center py-16">
                   <div className="w-16 h-16 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Server className="h-8 w-8 text-gray-500" />
