@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "@/components/ui/loading";
+import AIEventAssistant from "@/components/ai-event-assistant";
+import { apiClient } from "@/lib/api-config";
 
 // --- Interfaces ---
 interface Community {
@@ -63,19 +65,15 @@ export default function EventCreationPage() {
   const [loadingCommunities, setLoadingCommunities] = useState(true);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   // Fetch user's communities
   useEffect(() => {
-    fetch("http://localhost:8000/api/user/communities", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchCommunities = async () => {
+      try {
+        const data = await apiClient.getUserCommunities();
         setUserCommunities(data);
         setLoadingCommunities(false);
-      })
-      .catch(() => {
+      } catch (error) {
+        console.error("Failed to fetch communities:", error);
         // Mock data for demo
         const mockCommunities: Community[] = [
           { id: 101, community: "Kodlama Kulübü" },
@@ -84,9 +82,11 @@ export default function EventCreationPage() {
         ];
         setUserCommunities(mockCommunities);
         setLoadingCommunities(false);
-      });
-  }, []);
+      }
+    };
 
+    fetchCommunities();
+  }, []);
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -95,6 +95,14 @@ export default function EventCreationPage() {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
+    }));
+  };
+
+  // Handle AI suggestions
+  const handleAISuggestion = (field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
     }));
   };
 
@@ -152,18 +160,8 @@ export default function EventCreationPage() {
     if (coverImage) {
       submissionData.append("cover_image", coverImage);
     }
-
     try {
-      const response = await fetch("http://localhost:8000/api/events", {
-        method: "POST",
-        body: submissionData,
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Etkinlik oluşturulurken bir hata oluştu.");
-      }
-
+      const result = await apiClient.createEvent(submissionData);
       setSuccess("Etkinlik başarıyla oluşturuldu!");
       setTimeout(() => {
         router.push("/etkinlikler");
@@ -200,10 +198,17 @@ export default function EventCreationPage() {
             </div>
           </div>
         </div>
-      </div>
-
+      </div>{" "}
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
+          {/* AI Event Assistant */}
+          <div className="mb-8">
+            <AIEventAssistant
+              onSuggestionApply={handleAISuggestion}
+              currentFormData={formData}
+            />
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information Card */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">

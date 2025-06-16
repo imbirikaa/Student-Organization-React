@@ -325,14 +325,15 @@ export default function EventDetailPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Hero Section */}
       <div className="relative h-96 w-full overflow-hidden">
+        {" "}
         <Image
           src={event.cover_image || "/images/bg.png"}
           alt="Event cover image"
           fill
+          priority
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-
         {/* Back Button */}
         <div className="absolute top-6 left-6 z-10">
           <Button
@@ -345,7 +346,6 @@ export default function EventDetailPage() {
             Geri
           </Button>
         </div>
-
         {/* Action Buttons */}
         <div className="absolute top-6 right-6 z-10 flex gap-2">
           <Button
@@ -366,7 +366,6 @@ export default function EventDetailPage() {
             <Share2 className="h-4 w-4" />
           </Button>
         </div>
-
         {/* Event Title Overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-8">
           <div className="container mx-auto">

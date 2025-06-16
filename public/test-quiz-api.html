@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Quiz API Test</title>
+    <script>
+      async function testQuizAPI() {
+        const eventId = 18; // Test with event 18
+        const output = document.getElementById("output");
+
+        try {
+          // Test quiz fetch
+          output.innerHTML +=
+            "<h3>Testing Quiz API for Event " + eventId + "</h3>";
+          const response = await fetch(
+            `http://localhost:8000/api/events/${eventId}/quiz`,
+            {
+              credentials: "include",
+              headers: {
+                Accept: "application/json",
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            output.innerHTML += "<h4>Quiz Data:</h4>";
+            output.innerHTML +=
+              "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+          } else {
+            output.innerHTML +=
+              '<p style="color: red;">Error: ' +
+              response.status +
+              " " +
+              response.statusText +
+              "</p>";
+            const errorText = await response.text();
+            output.innerHTML += "<pre>" + errorText + "</pre>";
+          }
+        } catch (error) {
+          output.innerHTML +=
+            '<p style="color: red;">Fetch Error: ' + error.message + "</p>";
+        }
+      }
+
+      async function testSubmissionAPI() {
+        const output = document.getElementById("output");
+
+        try {
+          output.innerHTML += "<h3>Testing Quiz Submission API</h3>";
+
+          const response = await fetch(
+            "http://localhost:8000/api/quiz-submissions?event_id=18",
+            {
+              credentials: "include",
+              headers: {
+                Accept: "application/json",
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            output.innerHTML += "<h4>Submission Data:</h4>";
+            output.innerHTML +=
+              "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+          } else {
+            output.innerHTML +=
+              '<p style="color: red;">Error: ' +
+              response.status +
+              " " +
+              response.statusText +
+              "</p>";
+            const errorText = await response.text();
+            output.innerHTML += "<pre>" + errorText + "</pre>";
+          }
+        } catch (error) {
+          output.innerHTML +=
+            '<p style="color: red;">Fetch Error: ' + error.message + "</p>";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Quiz API Test Page</h1>
+    <button onclick="testQuizAPI()">Test Quiz API</button>
+    <button onclick="testSubmissionAPI()">Test Submission API</button>
+    <button onclick="document.getElementById('output').innerHTML = ''">
+      Clear
+    </button>
+
+    <div
+      id="output"
+      style="margin-top: 20px; font-family: monospace; white-space: pre-wrap"
+    ></div>
+  </body>
+</html>

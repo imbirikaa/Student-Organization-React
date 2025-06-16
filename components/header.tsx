@@ -124,6 +124,15 @@ export default function Header() {
               <span>Admin Paneli</span>
             </Link>
           )}
+          {user && (
+            <Link
+              href="/quiz/create"
+              className="flex items-center gap-1 text-sm text-gray-300 hover:text-white"
+            >
+              <FileText className="h-5 w-5" />
+              <span>Quiz Oluştur</span>
+            </Link>
+          )}
         </nav>
 
         {/* Right Actions */}
