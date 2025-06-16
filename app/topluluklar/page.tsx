@@ -4,9 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { CardSkeleton, LoadingSpinner } from "@/components/ui/loading";
-import { ErrorState } from "@/components/ui/error-state";
-import { User, FileEdit, FilePlus, Send, Search, Filter } from "lucide-react";
+import { User, FileEdit, FilePlus, Loader2, Send } from "lucide-react";
 import { useAuth } from "@/app/context/auth-context";
 import { toast } from "react-hot-toast";
 
@@ -15,21 +13,19 @@ interface Community {
   id: number;
   community: string;
   logo: string | null;
+  about?: string;
+  founding_year?: number;
   memberships_count: number;
   events_count: number;
+  created_at?: string;
 }
 
 export default function CommunitiesPage() {
-  const { user } = useAuth();
+  const { user } = useAuth(); // Get user from AuthContext to check if logged in
   const [communities, setCommunities] = useState<Community[]>([]);
-  const [filteredCommunities, setFilteredCommunities] = useState<Community[]>(
-    []
-  );
   const [isLoading, setIsLoading] = useState(true);
-  const [applyingId, setApplyingId] = useState<number | null>(null);
+  const [applyingId, setApplyingId] = useState<number | null>(null); // State to manage loading status for each button
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<"name" | "members" | "events">("name");
 
   // Function to get the CSRF token from cookies
   function getCookie(name: string) {
@@ -47,10 +43,10 @@ export default function CommunitiesPage() {
           throw new Error("Failed to fetch communities");
         }
         const data = await response.json();
-        setCommunities(data);
-        setFilteredCommunities(data);
+        // The API returns {communities: [...]} so we need to access data.communities
+        setCommunities(data.communities || []);
       } catch (err: any) {
-        setError(err.message);
+        setError("Topluluklar yüklenirken hata oluştu");
       } finally {
         setIsLoading(false);
       }
@@ -59,29 +55,9 @@ export default function CommunitiesPage() {
     fetchCommunities();
   }, []);
 
-  // Filter and sort communities
-  useEffect(() => {
-    let filtered = communities.filter((community) =>
-      community.community.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "members":
-          return b.memberships_count - a.memberships_count;
-        case "events":
-          return b.events_count - a.events_count;
-        default:
-          return a.community.localeCompare(b.community);
-      }
-    });
-
-    setFilteredCommunities(filtered);
-  }, [communities, searchTerm, sortBy]);
-
   const handleApply = async (communityId: number) => {
     if (!user) {
-      toast.error("You must be logged in to apply.");
+      toast.error("Başvuru yapmak için giriş yapmalısınız.");
       return;
     }
 
@@ -107,105 +83,44 @@ export default function CommunitiesPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Failed to submit application.");
+        throw new Error(data.message || "Başvuru gönderilirken hata oluştu.");
       }
 
-      toast.success(data.message || "Application submitted successfully!");
+      toast.success(data.message || "Başvurunuz başarıyla gönderildi!");
     } catch (err: any) {
-      toast.error(err.message || "An error occurred.");
+      toast.error(err.message || "Bir hata oluştu.");
     } finally {
       setApplyingId(null);
     }
   };
 
-  const retryFetch = () => {
-    setError(null);
-    setIsLoading(true);
-    // Re-trigger the effect
-    window.location.reload();
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header */}
+      {/* ...Header... */}
       <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Topluluklar</h1>
-          <p className="text-gray-400">
-            Üniversite topluluklarını keşfedin ve katılın
-          </p>
-        </div>
-        <Link href="/topluluk_olustur">
-          <Button className="bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white flex items-center gap-2 transition-all duration-200">
-            <FilePlus className="h-5 w-5" />
-            Topluluk Oluştur
-          </Button>
-        </Link>
-      </div>
-
-      {/* Search and Filter */}
-      <div className="mb-8 bg-gray-900/50 rounded-lg p-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Topluluk ara..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 rounded-lg border border-gray-600 bg-gray-800/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
-            />
-          </div>
-          <div className="flex gap-2">
-            <select
-              value={sortBy}
-              onChange={(e) =>
-                setSortBy(e.target.value as "name" | "members" | "events")
-              }
-              className="px-4 py-3 rounded-lg border border-gray-600 bg-gray-800/50 text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
-            >
-              <option value="name">İsme Göre</option>
-              <option value="members">Üye Sayısına Göre</option>
-              <option value="events">Etkinlik Sayısına Göre</option>
-            </select>
-            <Button
-              variant="outline"
-              className="border-gray-600 text-gray-300 hover:bg-gray-700"
-            >
-              <Filter className="w-4 h-4" />
+        <h1 className="text-2xl font-bold">Topluluklar</h1>
+        <div className="flex items-center gap-4">
+          <Link href="/topluluk_olustur">
+            <Button className="bg-teal-500 hover:bg-teal-600 flex items-center gap-2">
+              <FilePlus className="h-5 w-5" />
+              Topluluk Oluştur
             </Button>
-          </div>
+          </Link>
         </div>
-        {filteredCommunities.length !== communities.length && (
-          <p className="text-gray-400 text-sm mt-2">
-            {filteredCommunities.length} / {communities.length} topluluk
-            gösteriliyor
-          </p>
-        )}
       </div>
 
-      {/* Loading State */}
+      {/* Loading and Error States */}
       {isLoading && (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <CardSkeleton key={i} />
-          ))}
+        <div className="flex justify-center items-center p-16">
+          <Loader2 className="h-12 w-12 animate-spin text-teal-500" />
         </div>
       )}
-
-      {/* Error State */}
-      {error && !isLoading && (
-        <ErrorState
-          title="Topluluklar yüklenemedi"
-          message={error}
-          onRetry={retryFetch}
-        />
-      )}
+      {error && <p className="text-center text-red-500">{error}</p>}
 
       {/* Communities grid */}
-      {!isLoading && !error && (
+      {!isLoading && !error && communities && Array.isArray(communities) && (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filteredCommunities.map((community) => (
+          {communities.map((community) => (
             <div
               key={community.id}
               className="bg-gray-900 rounded-lg p-6 flex flex-col justify-between"
@@ -260,7 +175,7 @@ export default function CommunitiesPage() {
                   size="sm"
                 >
                   {applyingId === community.id ? (
-                    <LoadingSpinner size="sm" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <>
                       <Send className="h-4 w-4" />
@@ -273,6 +188,19 @@ export default function CommunitiesPage() {
           ))}
         </div>
       )}
+
+      {/* No communities fallback */}
+      {!isLoading &&
+        !error &&
+        (!communities ||
+          !Array.isArray(communities) ||
+          communities.length === 0) && (
+          <div className="text-center py-12">
+            <p className="text-gray-400 text-lg">
+              Şu anda müsait topluluk bulunmamaktadır.
+            </p>
+          </div>
+        )}
     </div>
   );
 }

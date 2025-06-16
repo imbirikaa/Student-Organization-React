@@ -87,16 +87,14 @@ export default function MyAttendanceCodesPage() {
       const response = await authenticatedFetch(
         "http://localhost:8000/api/my-attendance-codes"
       );
-
       if (!response.ok) {
-        throw new Error("Failed to fetch attendance codes");
+        throw new Error("Yoklama kodları getirilemedi");
       }
-
       const data = await response.json();
-      setAttendanceCodes(data.data || []);
+      setAttendanceCodes(data.attendance_codes || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
-      toast.error("Failed to load attendance codes");
+      setError(err instanceof Error ? err.message : "Bilinmeyen hata");
+      toast.error("Yoklama kodları yüklenemedi");
     } finally {
       setLoading(false);
     }
@@ -145,15 +143,14 @@ export default function MyAttendanceCodesPage() {
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">
-            Please log in to view your attendance codes
-          </h1>
+        <div className="text-center">          <h1 className="text-2xl font-bold text-white mb-4">
+            Yoklama kodlarınızı görüntülemek için giriş yapın
+          </h1>{" "}
           <Button
             onClick={() => (window.location.href = "/login")}
             className="bg-blue-600 hover:bg-blue-700"
           >
-            Go to Login
+            Giriş Sayfasına Git
           </Button>
         </div>
       </div>
@@ -167,13 +164,13 @@ export default function MyAttendanceCodesPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4">
             <Ticket className="w-8 h-8 text-white" />
-          </div>
+          </div>{" "}
           <h1 className="text-4xl font-bold text-white mb-4">
-            My Attendance Codes
+            Yoklama Kodlarım
           </h1>
           <p className="text-xl text-blue-200 max-w-2xl mx-auto">
-            Here are all your event attendance codes. Use these to check in at
-            events.
+            Tüm etkinlik yoklama kodlarınız burada. Bu kodları etkinliklerde
+            yoklama almak için kullanın.
           </p>
         </div>
 
@@ -192,9 +189,9 @@ export default function MyAttendanceCodesPage() {
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
                 <Ticket className="w-6 h-6 text-blue-400" />
-              </div>
+              </div>{" "}
               <div>
-                <p className="text-blue-200 text-sm">Total Codes</p>
+                <p className="text-blue-200 text-sm">Toplam Kod</p>
                 <p className="text-2xl font-bold text-white">
                   {attendanceCodes.length}
                 </p>
@@ -206,9 +203,9 @@ export default function MyAttendanceCodesPage() {
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
                 <CheckCircle className="w-6 h-6 text-green-400" />
-              </div>
+              </div>{" "}
               <div>
-                <p className="text-blue-200 text-sm">Checked In</p>
+                <p className="text-blue-200 text-sm">Yoklama Alındı</p>
                 <p className="text-2xl font-bold text-white">
                   {attendanceCodes.filter((code) => code.checked_in_at).length}
                 </p>
@@ -220,9 +217,9 @@ export default function MyAttendanceCodesPage() {
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
                 <Clock className="w-6 h-6 text-yellow-400" />
-              </div>
+              </div>{" "}
               <div>
-                <p className="text-blue-200 text-sm">Pending</p>
+                <p className="text-blue-200 text-sm">Beklemede</p>
                 <p className="text-2xl font-bold text-white">
                   {attendanceCodes.filter((code) => !code.checked_in_at).length}
                 </p>
@@ -236,18 +233,18 @@ export default function MyAttendanceCodesPage() {
           <div className="text-center py-12">
             <div className="w-24 h-24 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Ticket className="w-12 h-12 text-gray-400" />
-            </div>
+            </div>{" "}
             <h3 className="text-xl font-bold text-white mb-2">
-              No Attendance Codes
+              Yoklama Kodu Yok
             </h3>
             <p className="text-blue-200 mb-6">
-              You haven't registered for any events yet.
+              Henüz hiçbir etkinliğe kayıt olmadınız.
             </p>
             <Button
               onClick={() => (window.location.href = "/etkinlikler")}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              Browse Events
+              Etkinlikleri Gözat
             </Button>
           </div>
         ) : (
@@ -368,9 +365,8 @@ export default function MyAttendanceCodesPage() {
                         variant="outline"
                         size="sm"
                         className="bg-blue-500/20 border-blue-500/30 text-blue-300 hover:bg-blue-500/30"
-                      >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        View Event
+                      >                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Etkinliği Görüntüle
                       </Button>
                     </div>
 
@@ -432,9 +428,8 @@ export default function MyAttendanceCodesPage() {
             <Button
               onClick={() => (window.location.href = "/attendance-guide")}
               className="bg-blue-600 hover:bg-blue-700"
-            >
-              <ExternalLink className="w-4 h-4 mr-2" />
-              View Attendance Guide
+            >              <ExternalLink className="w-4 h-4 mr-2" />
+              Yoklama Rehberini Görüntüle
             </Button>
           </div>
         </div>

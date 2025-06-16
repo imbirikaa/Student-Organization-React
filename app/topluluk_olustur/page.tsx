@@ -138,7 +138,7 @@ export default function CommunityCreationPage() {
         throw new Error(data.message || "An error occurred on the server.");
       }
 
-      toast.success("Community created successfully!");
+      toast.success("Topluluk başarıyla oluşturuldu!");
       router.push("/topluluklar");
     } catch (error) {
       let errorMessage = "Failed to create community.";
@@ -297,7 +297,7 @@ export default function CommunityCreationPage() {
                   <div className="relative group">
                     <Image
                       src={logoPreview}
-                      alt="Logo preview"
+                      alt="Logo önizlemesi"
                       width={200}
                       height={200}
                       className="w-32 h-32 object-cover rounded-xl border-2 border-gray-200 dark:border-gray-600 mx-auto"

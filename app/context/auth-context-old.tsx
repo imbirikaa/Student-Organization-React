@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize token from localStorage on app start
   useEffect(() => {
-    const savedToken = localStorage.getItem('auth_token');
+    const savedToken = localStorage.getItem("auth_token");
     if (savedToken) {
       setToken(savedToken);
     }
@@ -54,13 +54,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUser = async () => {
     if (!token) return;
-    
+
     setLoading(true);
     try {
       const res = await fetch("http://localhost:8000/api/me", {
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/json",
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
         },
       });
 
@@ -71,13 +71,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         // Token is invalid, clear it
         setToken(null);
-        localStorage.removeItem('auth_token');
+        localStorage.removeItem("auth_token");
       }
     } catch (error) {
       console.error("Error fetching user:", error);
       // On error, clear auth state
       setToken(null);
-      localStorage.removeItem('auth_token');
+      localStorage.removeItem("auth_token");
     } finally {
       setLoading(false);
     }
@@ -89,7 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
@@ -98,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const data = await res.json();
         const newToken = data.token;
         setToken(newToken);
-        localStorage.setItem('auth_token', newToken);
+        localStorage.setItem("auth_token", newToken);
         return true;
       } else {
         console.error("Login failed:", await res.text());
@@ -116,19 +116,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await fetch("http://localhost:8000/api/logout", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}`,
-            "Accept": "application/json",
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           },
         });
       } catch (error) {
         console.error("Logout error:", error);
       }
     }
-    
+
     setToken(null);
     setUser(null);
     setRoles([]);
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem("auth_token");
   };
 
   return (
@@ -151,39 +151,3 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
-
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.user ?? data);
-        setRoles(data.roles ?? []);
-      } else if (res.status === 401) {
-        setUser(null);
-        setRoles([]);
-      } else {
-        console.error("Unexpected error fetching user", res.status);
-      }
-    } catch (err) {
-      console.error("Fetch failed", err);
-      setUser(null);
-      setRoles([]);
-    } finally {
-      setLoading(false); // ✅ Done loading
-    }
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  return (
-    <AuthContext.Provider
-      value={{ user, setUser, roles, setRoles, fetchUser, loading }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
-}

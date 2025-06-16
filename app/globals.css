@@ -47,6 +47,126 @@
   --ring: 172 66% 50%;
 }
 
+/* Dark theme enhancements for admin pages */
+.dark {
+  /* Enhanced dark mode scrollbar */
+  scrollbar-color: rgba(99, 102, 241, 0.4) rgba(31, 41, 55, 0.3);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.3);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    45deg,
+    rgba(99, 102, 241, 0.6),
+    rgba(139, 92, 246, 0.6)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    45deg,
+    rgba(99, 102, 241, 0.8),
+    rgba(139, 92, 246, 0.8)
+  );
+}
+
+/* Dark theme gradient backgrounds */
+.dark .bg-gradient-admin {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 50%, #0f172a 100%);
+}
+
+/* Dark theme card backgrounds with subtle glow */
+.dark .card-dark-glow {
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.dark .card-dark-glow:hover {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+}
+
+/* Dark theme text gradients */
+.dark .text-gradient-primary {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .text-gradient-secondary {
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Enhanced dropdown styling */
+.dropdown-enhanced {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.dark .dropdown-enhanced {
+  background: rgba(31, 41, 55, 0.95);
+  border: 1px solid rgba(75, 85, 99, 0.4);
+}
+
+/* Custom scrollbar for dropdowns */
+.dropdown-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-scroll::-webkit-scrollbar-track {
+  background: rgba(156, 163, 175, 0.1);
+  border-radius: 4px;
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    45deg,
+    rgba(59, 130, 246, 0.6),
+    rgba(139, 92, 246, 0.6)
+  );
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    45deg,
+    rgba(59, 130, 246, 0.8),
+    rgba(139, 92, 246, 0.8)
+  );
+}
+
+.dark .dropdown-scroll::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.3);
+}
+
+.dark .dropdown-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    45deg,
+    rgba(99, 102, 241, 0.7),
+    rgba(139, 92, 246, 0.7)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .dropdown-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    45deg,
+    rgba(99, 102, 241, 0.9),
+    rgba(139, 92, 246, 0.9)
+  );
+}
+
+/* Border width utilities */
+
 body {
   @apply bg-background text-foreground;
 }

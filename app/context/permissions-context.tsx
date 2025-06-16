@@ -106,12 +106,8 @@ export function PermissionsProvider({
       setLoading(false);
     }
   }, [user]);
-  const hasPermission = (communityId: number, permission: string): boolean => {
-    // Website administrators have access to everything
-    if (user?.is_admin === true) {
-      return true;
-    }
 
+  const hasPermission = (communityId: number, permission: string): boolean => {
     const communityPermission = userPermissions.find(
       (p) => p.communityId === communityId
     );
@@ -119,11 +115,6 @@ export function PermissionsProvider({
   };
 
   const getUserRole = (communityId: number): string | null => {
-    // Website administrators can be considered as having highest role
-    if (user?.is_admin === true) {
-      return "Website Admin";
-    }
-
     const communityPermission = userPermissions.find(
       (p) => p.communityId === communityId
     );
@@ -131,31 +122,16 @@ export function PermissionsProvider({
   };
 
   const isAdmin = (communityId: number): boolean => {
-    // Website administrators are always admin
-    if (user?.is_admin === true) {
-      return true;
-    }
-
     const role = getUserRole(communityId);
     return role === "Kurucu" || role === "Yönetici";
   };
 
   const isFounder = (communityId: number): boolean => {
-    // Website administrators have founder-level access
-    if (user?.is_admin === true) {
-      return true;
-    }
-
     const role = getUserRole(communityId);
     return role === "Kurucu";
   };
 
   const isModerator = (communityId: number): boolean => {
-    // Website administrators have moderator-level access and above
-    if (user?.is_admin === true) {
-      return true;
-    }
-
     const role = getUserRole(communityId);
     return role === "Moderatör";
   };

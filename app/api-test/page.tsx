@@ -2,8 +2,19 @@
 
 import { useState } from "react";
 
+interface TestResult {
+  status?: number;
+  data?: any;
+  error?: string;
+}
+
+interface TestResults {
+  me?: TestResult;
+  adminStats?: TestResult;
+}
+
 export default function APITestPage() {
-  const [results, setResults] = useState<any>({});
+  const [results, setResults] = useState<TestResults>({});
   const [loading, setLoading] = useState(false);
 
   const getCookieValue = (name: string): string => {
@@ -36,7 +47,9 @@ export default function APITestPage() {
         me: { status: response.status, data },
       }));
     } catch (error) {
-      setResults((prev) => ({ ...prev, me: { error: error.message } }));
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      setResults((prev) => ({ ...prev, me: { error: errorMessage } }));
     } finally {
       setLoading(false);
     }
@@ -65,7 +78,9 @@ export default function APITestPage() {
         adminStats: { status: response.status, data },
       }));
     } catch (error) {
-      setResults((prev) => ({ ...prev, adminStats: { error: error.message } }));
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      setResults((prev) => ({ ...prev, adminStats: { error: errorMessage } }));
     } finally {
       setLoading(false);
     }
