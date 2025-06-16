@@ -143,7 +143,9 @@ export default function MyAttendanceCodesPage() {
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
-        <div className="text-center">          <h1 className="text-2xl font-bold text-white mb-4">
+        <div className="text-center">
+          {" "}
+          <h1 className="text-2xl font-bold text-white mb-4">
             Yoklama kodlarınızı görüntülemek için giriş yapın
           </h1>{" "}
           <Button
@@ -365,7 +367,9 @@ export default function MyAttendanceCodesPage() {
                         variant="outline"
                         size="sm"
                         className="bg-blue-500/20 border-blue-500/30 text-blue-300 hover:bg-blue-500/30"
-                      >                        <ExternalLink className="w-4 h-4 mr-2" />
+                      >
+                        {" "}
+                        <ExternalLink className="w-4 h-4 mr-2" />
                         Etkinliği Görüntüle
                       </Button>
                     </div>
@@ -428,7 +432,9 @@ export default function MyAttendanceCodesPage() {
             <Button
               onClick={() => (window.location.href = "/attendance-guide")}
               className="bg-blue-600 hover:bg-blue-700"
-            >              <ExternalLink className="w-4 h-4 mr-2" />
+            >
+              {" "}
+              <ExternalLink className="w-4 h-4 mr-2" />
               Yoklama Rehberini Görüntüle
             </Button>
           </div>
